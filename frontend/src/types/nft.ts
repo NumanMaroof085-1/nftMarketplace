@@ -25,3 +25,21 @@ export type MarketplaceNFT = {
   attributes: NFTAttribute[];
   listing: NFTListing | null;
 };
+
+export type AccountListingRecord = {
+  listingId: string;
+  tokenId: string;
+  priceEth: string;
+  status: "active" | "sold" | "cancelled";
+  seller: `0x${string}`;
+  buyer: `0x${string}` | null;
+  transactionHash: `0x${string}` | null;
+  nft: MarketplaceNFT;
+};
+
+export type MarketplaceAccountData = {
+  myNfts: MarketplaceNFT[];
+  myListings: AccountListingRecord[];
+  purchased: AccountListingRecord[];
+  sold: AccountListingRecord[];
+};

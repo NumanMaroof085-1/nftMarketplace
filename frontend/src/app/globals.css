@@ -1541,6 +1541,242 @@ a:focus-visible {
   text-underline-offset: 4px;
 }
 
+.account-activity-section {
+  margin: 0 auto 110px;
+  max-width: 1124px;
+  padding: 0 28px;
+}
+
+.account-activity-heading {
+  align-items: end;
+  display: flex;
+  gap: 32px;
+  justify-content: space-between;
+}
+
+.account-activity-heading h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(34px, 5vw, 52px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  margin-top: 9px;
+}
+
+.account-activity-heading > p {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+  max-width: 390px;
+}
+
+.account-tabs {
+  border-bottom: 1px solid var(--line);
+  display: flex;
+  gap: 4px;
+  margin-top: 32px;
+  overflow-x: auto;
+}
+
+.account-tabs button {
+  align-items: center;
+  background: transparent;
+  border: 0;
+  border-bottom: 2px solid transparent;
+  color: var(--muted);
+  cursor: pointer;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-size: 12px;
+  font-weight: 700;
+  gap: 8px;
+  margin-bottom: -1px;
+  padding: 12px 14px;
+}
+
+.account-tabs button:hover,
+.account-tabs button.active {
+  color: var(--foreground);
+}
+
+.account-tabs button.active {
+  border-bottom-color: var(--accent);
+}
+
+.account-tabs button span {
+  align-items: center;
+  background: #e4e6dd;
+  border-radius: 999px;
+  display: inline-flex;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 9px;
+  height: 21px;
+  justify-content: center;
+  min-width: 21px;
+  padding: 0 6px;
+}
+
+.account-activity-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, minmax(0, 1fr));
+  margin-top: 24px;
+}
+
+.account-activity-card {
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  min-width: 0;
+  overflow: hidden;
+}
+
+.account-activity-card > a:first-child {
+  color: var(--foreground);
+  display: block;
+  text-decoration: none;
+}
+
+.account-activity-image {
+  align-items: center;
+  aspect-ratio: 1.35;
+  background: #e7e8df;
+  display: flex;
+  justify-content: center;
+  overflow: hidden;
+  position: relative;
+}
+
+.account-activity-image img {
+  height: 100%;
+  object-fit: cover;
+  transition: transform 180ms ease;
+  width: 100%;
+}
+
+.account-activity-card:hover .account-activity-image img {
+  transform: scale(1.025);
+}
+
+.account-activity-image > span:not(.activity-status) {
+  color: var(--muted);
+  font-size: 11px;
+}
+
+.activity-status {
+  background: rgba(255, 253, 248, 0.94);
+  border-radius: 999px;
+  font-size: 9px;
+  font-weight: 800;
+  left: 11px;
+  padding: 6px 8px;
+  position: absolute;
+  text-transform: capitalize;
+  top: 11px;
+}
+
+.activity-status.active,
+.activity-status.listed {
+  background: #dff0e4;
+  color: var(--accent-dark);
+}
+
+.activity-status.sold,
+.activity-status.purchased {
+  background: #e5e9f7;
+  color: #334a8b;
+}
+
+.activity-status.cancelled {
+  background: #f2e6e1;
+  color: #824835;
+}
+
+.account-activity-card-body {
+  padding: 15px;
+}
+
+.account-activity-card-body p {
+  color: var(--muted);
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 9px;
+  text-transform: uppercase;
+}
+
+.account-activity-card-body h3 {
+  font-family: Georgia, serif;
+  font-size: 20px;
+  font-weight: 500;
+  margin-top: 5px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.account-activity-card-body > strong {
+  display: block;
+  font-size: 11px;
+  margin-top: 10px;
+}
+
+.activity-transaction-link {
+  border-top: 1px solid var(--line);
+  color: var(--muted);
+  display: block;
+  font-size: 10px;
+  font-weight: 700;
+  padding: 11px 15px;
+  text-decoration: none;
+}
+
+.activity-transaction-link:hover {
+  color: var(--accent-dark);
+}
+
+.account-activity-state {
+  align-items: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 15px;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  margin-top: 24px;
+  min-height: 190px;
+  padding: 28px;
+  text-align: center;
+}
+
+.account-activity-state strong {
+  font-family: Georgia, serif;
+  font-size: 22px;
+  font-weight: 500;
+}
+
+.account-activity-state p {
+  color: var(--muted);
+  font-size: 12px;
+  margin-top: 7px;
+}
+
+.account-activity-state button {
+  background: var(--foreground);
+  border: 0;
+  border-radius: 8px;
+  color: white;
+  cursor: pointer;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 16px;
+  padding: 10px 13px;
+}
+
+.activity-skeleton {
+  background: linear-gradient(90deg, #e5e5dd 25%, #f0f0ea 50%, #e5e5dd 75%);
+  background-size: 200% 100%;
+  min-height: 290px;
+  animation: skeleton-shimmer 1.3s infinite;
+}
+
 .back-link {
   color: var(--foreground);
   display: inline-block;
@@ -1584,6 +1820,10 @@ a:focus-visible {
 
   .account-dashboard-grid {
     grid-template-columns: 1fr;
+  }
+
+  .account-activity-grid {
+    grid-template-columns: repeat(2, minmax(0, 1fr));
   }
 
   .details-image-panel {
@@ -1641,7 +1881,8 @@ a:focus-visible {
   .discovery-section,
   .nft-details-grid,
   .account-page-heading,
-  .account-dashboard-grid {
+  .account-dashboard-grid,
+  .account-activity-section {
     padding-left: 18px;
     padding-right: 18px;
   }
@@ -1653,6 +1894,16 @@ a:focus-visible {
   .account-connect-card {
     margin-left: 18px;
     margin-right: 18px;
+  }
+
+  .account-activity-heading {
+    align-items: start;
+    flex-direction: column;
+    gap: 12px;
+  }
+
+  .account-activity-grid {
+    grid-template-columns: 1fr;
   }
 
   .discovery-heading {

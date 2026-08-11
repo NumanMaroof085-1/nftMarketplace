@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 
+import { AccountActivity } from "@/components/account-activity";
 import { AccountDashboard } from "@/components/account-dashboard";
 import { SiteHeader } from "@/components/site-header";
 
@@ -21,6 +22,7 @@ export default function AccountPage() {
         </p>
       </section>
       <AccountDashboard />
+      <AccountActivity />
     </main>
   );
 }

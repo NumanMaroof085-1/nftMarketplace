@@ -1,4 +1,6 @@
-import { createPublicClient, formatEther, http } from "viem";
+import "server-only";
+
+import { createPublicClient, formatEther, http, type Address } from "viem";
 import { sepolia } from "viem/chains";
 
 import {
@@ -8,7 +10,12 @@ import {
 } from "@/config/contracts";
 import { marketplaceAbi } from "@/contracts/marketplace-abi";
 import { nftAbi } from "@/contracts/nft-abi";
-import type { MarketplaceNFT, NFTAttribute } from "@/types/nft";
+import type {
+  AccountListingRecord,
+  MarketplaceAccountData,
+  MarketplaceNFT,
+  NFTAttribute,
+} from "@/types/nft";
 
 const publicClient = createPublicClient({
   chain: sepolia,
@@ -175,4 +182,96 @@ export async function getMarketplaceNFTs() {
     .sort((left, right) => (left > right ? -1 : left < right ? 1 : 0));
 
   return Promise.all(tokenIds.map(getMarketplaceNFT));
+}
+
+export async function getMarketplaceAccountData(
+  account: Address,
+): Promise<MarketplaceAccountData> {
+  const [nfts, marketplaceLogs] = await Promise.all([
+    getMarketplaceNFTs(),
+    publicClient.getContractEvents({
+      abi: marketplaceAbi,
+      address: MARKETPLACE_ADDRESS,
+      fromBlock: NFT_DEPLOYMENT_BLOCK,
+      toBlock: "latest",
+    }),
+  ]);
+
+  const accountKey = account.toLowerCase();
+  const nftByTokenId = new Map(nfts.map((nft) => [nft.tokenId, nft]));
+  const listingLogs = marketplaceLogs.filter(
+    (log) => log.eventName === "NFTListed",
+  );
+  const soldLogs = marketplaceLogs.filter(
+    (log) => log.eventName === "NFTSold",
+  );
+  const cancelledLogs = marketplaceLogs.filter(
+    (log) => log.eventName === "ListingCancelled",
+  );
+
+  const listingRecords = listingLogs.flatMap((listingLog) => {
+    const { listingId, nftContract, price, seller, tokenId } = listingLog.args;
+
+    if (
+      listingId === undefined ||
+      nftContract?.toLowerCase() !== NFT_ADDRESS.toLowerCase() ||
+      price === undefined ||
+      seller === undefined ||
+      tokenId === undefined
+    ) {
+      return [];
+    }
+
+    const listingKey = listingId.toString();
+    const nft = nftByTokenId.get(tokenId.toString());
+
+    if (!nft) return [];
+
+    const soldLog = soldLogs.find(
+      (log) => log.args.listingId?.toString() === listingKey,
+    );
+    const cancelledLog = cancelledLogs.find(
+      (log) => log.args.listingId?.toString() === listingKey,
+    );
+    const status: AccountListingRecord["status"] = soldLog
+      ? "sold"
+      : cancelledLog
+        ? "cancelled"
+        : "active";
+
+    return [
+      {
+        listingId: listingKey,
+        tokenId: tokenId.toString(),
+        priceEth: formatEther(price),
+        status,
+        seller,
+        buyer: soldLog?.args.buyer ?? null,
+        transactionHash:
+          soldLog?.transactionHash ??
+          cancelledLog?.transactionHash ??
+          listingLog.transactionHash ??
+          null,
+        nft,
+      } satisfies AccountListingRecord,
+    ];
+  });
+
+  listingRecords.sort((left, right) =>
+    BigInt(left.listingId) > BigInt(right.listingId) ? -1 : 1,
+  );
+
+  return {
+    myNfts: nfts.filter((nft) => nft.owner.toLowerCase() === accountKey),
+    myListings: listingRecords.filter(
+      (record) => record.seller.toLowerCase() === accountKey,
+    ),
+    purchased: listingRecords.filter(
+      (record) => record.buyer?.toLowerCase() === accountKey,
+    ),
+    sold: listingRecords.filter(
+      (record) =>
+        record.status === "sold" && record.seller.toLowerCase() === accountKey,
+    ),
+  };
 }
