@@ -1,8 +1,14 @@
 @import "tailwindcss";
 
 :root {
-  --background: #ffffff;
-  --foreground: #171717;
+  --background: #f5f3ee;
+  --foreground: #172019;
+  --surface: #fffdf8;
+  --muted: #667067;
+  --line: #d8d8cf;
+  --accent: #287a4b;
+  --accent-dark: #185b36;
+  --warning: #9a5b12;
 }
 
 @theme inline {
@@ -12,15 +18,378 @@
   --font-mono: "Cascadia Code", Consolas, monospace;
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
-
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
+}
+
+button,
+a {
+  -webkit-tap-highlight-color: transparent;
+}
+
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid color-mix(in srgb, var(--accent) 45%, transparent);
+  outline-offset: 3px;
+}
+
+.site-shell {
+  min-height: 100vh;
+  overflow: hidden;
+}
+
+.site-header {
+  align-items: center;
+  display: flex;
+  justify-content: space-between;
+  margin: 0 auto;
+  max-width: 1180px;
+  padding: 24px 28px;
+}
+
+.brand,
+.header-actions,
+.hero-actions,
+.wallet-connected {
+  align-items: center;
+  display: flex;
+}
+
+.brand {
+  color: var(--foreground);
+  font-size: 15px;
+  font-weight: 700;
+  gap: 10px;
+  letter-spacing: -0.01em;
+  text-decoration: none;
+}
+
+.brand-mark {
+  align-items: center;
+  background: var(--foreground);
+  border-radius: 8px;
+  color: white;
+  display: inline-flex;
+  font-family: Georgia, serif;
+  font-size: 18px;
+  height: 34px;
+  justify-content: center;
+  width: 34px;
+}
+
+.header-actions {
+  gap: 12px;
+}
+
+.network-badge {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 999px;
+  display: inline-flex;
+  font-size: 13px;
+  font-weight: 600;
+  gap: 7px;
+  padding: 9px 12px;
+}
+
+.network-badge span {
+  background: #43a76c;
+  border-radius: 50%;
+  box-shadow: 0 0 0 4px #dcefe3;
+  height: 7px;
+  width: 7px;
+}
+
+.wallet-action {
+  position: relative;
+}
+
+.wallet-button,
+.wallet-connected,
+.primary-link {
+  background: var(--foreground);
+  border: 0;
+  border-radius: 10px;
+  color: white;
+  font-size: 14px;
+  font-weight: 700;
+  min-height: 42px;
+  padding: 0 17px;
+}
+
+.wallet-button,
+.primary-link {
+  cursor: pointer;
+}
+
+.wallet-button:hover:not(:disabled),
+.primary-link:hover {
+  background: var(--accent-dark);
+}
+
+.primary-link {
+  align-items: center;
+  display: inline-flex;
+  text-decoration: none;
+}
+
+.wallet-button:disabled {
+  cursor: wait;
+  opacity: 0.65;
+}
+
+.wallet-button-warning {
+  background: var(--warning);
+}
+
+.wallet-connected {
+  gap: 12px;
+}
+
+.wallet-connected button {
+  background: transparent;
+  border: 0;
+  color: #b9d7c4;
+  cursor: pointer;
+  font-size: 12px;
+  padding: 0;
+  text-decoration: underline;
+  text-underline-offset: 3px;
+}
+
+.wallet-error {
+  background: #fff2ee;
+  border: 1px solid #e8b4a8;
+  border-radius: 8px;
+  color: #8b2c1f;
+  font-size: 12px;
+  margin-top: 8px;
+  max-width: 280px;
+  padding: 8px 10px;
+  position: absolute;
+  right: 0;
+  z-index: 10;
+}
+
+.hero {
+  display: grid;
+  gap: 72px;
+  grid-template-columns: minmax(0, 1.35fr) minmax(300px, 0.65fr);
+  margin: 0 auto;
+  max-width: 1180px;
+  min-height: 590px;
+  padding: 90px 28px 80px;
+  position: relative;
+}
+
+.hero::before {
+  background: #c9e0cf;
+  border-radius: 50%;
+  content: "";
+  filter: blur(2px);
+  height: 360px;
+  opacity: 0.72;
+  position: absolute;
+  right: -190px;
+  top: 20px;
+  width: 360px;
+  z-index: -1;
+}
+
+.hero-copy {
+  align-self: center;
+  max-width: 760px;
+}
+
+.eyebrow {
+  color: var(--accent-dark);
+  font-size: 12px;
+  font-weight: 800;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+}
+
+.hero h1 {
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: clamp(56px, 8vw, 104px);
+  font-weight: 500;
+  letter-spacing: -0.065em;
+  line-height: 0.92;
+  margin-top: 22px;
+  max-width: 800px;
+}
+
+.hero-description {
+  color: var(--muted);
+  font-size: 18px;
+  line-height: 1.7;
+  margin-top: 30px;
+  max-width: 620px;
+}
+
+.hero-actions {
+  flex-wrap: wrap;
+  gap: 18px;
+  margin-top: 34px;
+}
+
+.secondary-link {
+  border-bottom: 1px solid currentColor;
+  color: var(--foreground);
+  font-size: 14px;
+  font-weight: 700;
+  padding: 10px 0 7px;
+  text-decoration: none;
+}
+
+.contract-card {
+  align-self: center;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 22px;
+  box-shadow: 0 25px 80px rgba(23, 32, 25, 0.09);
+  padding: 30px;
+  transform: rotate(1.5deg);
+}
+
+.contract-card > p {
+  font-family: Georgia, serif;
+  font-size: 26px;
+  margin-bottom: 24px;
+}
+
+.contract-card dl > div {
+  border-top: 1px solid var(--line);
+  display: flex;
+  justify-content: space-between;
+  padding: 17px 0;
+}
+
+.contract-card dt {
+  color: var(--muted);
+  font-size: 13px;
+}
+
+.contract-card dd {
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+  margin-left: 16px;
+  text-align: right;
+}
+
+.steps-section {
+  background: var(--foreground);
+  color: #f8f6f0;
+  padding: 90px max(28px, calc((100vw - 1124px) / 2));
+}
+
+.steps-section .eyebrow {
+  color: #8fd0a8;
+}
+
+.section-heading h2 {
+  font-family: Georgia, serif;
+  font-size: clamp(36px, 5vw, 58px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  margin-top: 12px;
+}
+
+.steps-grid {
+  display: grid;
+  gap: 18px;
+  grid-template-columns: repeat(3, 1fr);
+  margin-top: 48px;
+}
+
+.step-card {
+  border: 1px solid #3b463d;
+  border-radius: 18px;
+  min-height: 220px;
+  padding: 25px;
+}
+
+.step-card > span {
+  color: #8fd0a8;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 12px;
+}
+
+.step-card h3 {
+  font-family: Georgia, serif;
+  font-size: 29px;
+  font-weight: 500;
+  margin-top: 48px;
+}
+
+.step-card p {
+  color: #abb4ad;
+  font-size: 14px;
+  line-height: 1.65;
+  margin-top: 12px;
+}
+
+@media (max-width: 820px) {
+  .network-badge {
+    display: none;
+  }
+
+  .hero {
+    gap: 42px;
+    grid-template-columns: 1fr;
+    padding-top: 62px;
+  }
+
+  .contract-card {
+    transform: none;
+  }
+
+  .steps-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .step-card {
+    min-height: auto;
+  }
+
+  .step-card h3 {
+    margin-top: 28px;
+  }
+}
+
+@media (max-width: 560px) {
+  .site-header {
+    align-items: flex-start;
+    padding: 18px;
+  }
+
+  .brand > span:last-child {
+    display: none;
+  }
+
+  .hero {
+    padding: 55px 18px 64px;
+  }
+
+  .hero h1 {
+    font-size: 55px;
+  }
+
+  .hero-description {
+    font-size: 16px;
+  }
+
+  .wallet-connected {
+    align-items: flex-start;
+    flex-direction: column;
+    gap: 3px;
+    padding-bottom: 7px;
+    padding-top: 7px;
+  }
+
+  .steps-section {
+    padding: 70px 18px;
+  }
 }
