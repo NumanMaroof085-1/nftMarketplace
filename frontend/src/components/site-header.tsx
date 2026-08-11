@@ -14,7 +14,10 @@ export function SiteHeader({ active }: SiteHeaderProps) {
         <span>NFT Marketplace</span>
       </Link>
       <nav className="site-nav" aria-label="Primary navigation">
-        <Link className={active === "discover" ? "active" : ""} href="/">
+        <Link
+          className={active === "discover" ? "active" : ""}
+          href="/#discover"
+        >
           Discover
         </Link>
         <Link className={active === "create" ? "active" : ""} href="/create">

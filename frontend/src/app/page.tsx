@@ -1,4 +1,5 @@
 import { SiteHeader } from "@/components/site-header";
+import { NFTGallery } from "@/components/nft-gallery";
 import {
   MARKETPLACE_ADDRESS,
   NFT_ADDRESS,
@@ -70,6 +71,17 @@ export default function Home() {
             </div>
           </dl>
         </aside>
+      </section>
+
+      <section className="discovery-section" id="discover" aria-labelledby="discover-heading">
+        <div className="discovery-heading">
+          <div>
+            <p className="eyebrow">Live Sepolia collection</p>
+            <h2 id="discover-heading">Discover minted NFTs</h2>
+          </div>
+          <p>Loaded directly from contract events, current ownership, and IPFS metadata.</p>
+        </div>
+        <NFTGallery />
       </section>
 
       <section className="steps-section" aria-labelledby="how-it-works">

@@ -6,4 +6,6 @@ export const NFT_ADDRESS =
 export const MARKETPLACE_ADDRESS =
   "0x27b33F1A4f79346305Fe20779F339D79996569ec" satisfies Address;
 
+export const NFT_DEPLOYMENT_BLOCK = BigInt(11_464_454);
+
 export const SEPOLIA_EXPLORER_URL = "https://sepolia.etherscan.io";
