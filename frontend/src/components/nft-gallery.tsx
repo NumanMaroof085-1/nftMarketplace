@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import type { MarketplaceNFT } from "@/types/nft";
@@ -20,6 +21,34 @@ async function fetchNFTs() {
 
 function shortenAddress(address: string) {
   return `${address.slice(0, 6)}…${address.slice(-4)}`;
+}
+
+function NFTCardArtwork({ nft }: { nft: MarketplaceNFT }) {
+  const [imageFailed, setImageFailed] = useState(false);
+  const showImage = nft.imageUrl && !imageFailed;
+
+  return (
+    <div className="nft-card-image">
+      {showImage ? (
+        <img
+          alt={nft.name}
+          loading="lazy"
+          onError={() => setImageFailed(true)}
+          src={nft.imageUrl}
+        />
+      ) : (
+        <span>
+          {nft.metadataAvailable ? "Image unavailable" : "Metadata unavailable"}
+        </span>
+      )}
+      <span className={`status-pill ${nft.listing ? "listed" : "owned"}`}>
+        {nft.listing ? "For sale" : "Not listed"}
+      </span>
+      {!nft.metadataAvailable && (
+        <span className="metadata-status">IPFS file missing</span>
+      )}
+    </div>
+  );
 }
 
 export function NFTGallery() {
@@ -66,16 +95,7 @@ export function NFTGallery() {
     <div className="nft-grid">
       {data.map((nft) => (
         <Link className="nft-card" href={`/nft/${nft.tokenId}`} key={nft.tokenId}>
-          <div className="nft-card-image">
-            {nft.imageUrl ? (
-              <img alt={nft.name} loading="lazy" src={nft.imageUrl} />
-            ) : (
-              <span>No image</span>
-            )}
-            <span className={`status-pill ${nft.listing ? "listed" : "owned"}`}>
-              {nft.listing ? "For sale" : "Not listed"}
-            </span>
-          </div>
+          <NFTCardArtwork nft={nft} />
           <div className="nft-card-body">
             <div>
               <p>Token #{nft.tokenId}</p>

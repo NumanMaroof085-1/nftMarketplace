@@ -3,6 +3,7 @@
 /* eslint-disable @next/next/no-img-element */
 
 import Link from "next/link";
+import { useState } from "react";
 import { useQuery } from "@tanstack/react-query";
 
 import { ListingForm } from "@/components/listing-form";
@@ -25,7 +26,33 @@ async function fetchNFT(tokenId: string) {
 }
 
 function shortenAddress(address: string) {
+  if (!/^0x[a-fA-F0-9]{40}$/.test(address)) {
+    return address;
+  }
+
   return `${address.slice(0, 8)}…${address.slice(-6)}`;
+}
+
+function NFTDetailsArtwork({ nft }: { nft: MarketplaceNFT }) {
+  const [imageFailed, setImageFailed] = useState(false);
+
+  if (!nft.imageUrl || imageFailed) {
+    return (
+      <span>
+        {nft.metadataAvailable
+          ? "NFT image unavailable"
+          : "IPFS metadata unavailable"}
+      </span>
+    );
+  }
+
+  return (
+    <img
+      alt={nft.name}
+      onError={() => setImageFailed(true)}
+      src={nft.imageUrl}
+    />
+  );
 }
 
 export function NFTDetails({ tokenId }: { tokenId: string }) {
@@ -51,11 +78,7 @@ export function NFTDetails({ tokenId }: { tokenId: string }) {
   return (
     <div className="nft-details-grid">
       <section className="details-image-panel">
-        {nft.imageUrl ? (
-          <img alt={nft.name} src={nft.imageUrl} />
-        ) : (
-          <span>No NFT image available</span>
-        )}
+        <NFTDetailsArtwork nft={nft} />
       </section>
 
       <section className="details-content">
@@ -70,6 +93,16 @@ export function NFTDetails({ tokenId }: { tokenId: string }) {
         </div>
 
         <p className="details-description">{nft.description}</p>
+
+        {!nft.metadataAvailable && (
+          <div className="metadata-warning" role="status">
+            <strong>IPFS metadata unavailable</strong>
+            <p>
+              The NFT still exists on Sepolia, but the file referenced by its
+              permanent token URI can no longer be reached through IPFS.
+            </p>
+          </div>
+        )}
 
         {nft.attributes.length > 0 && (
           <div className="attribute-grid">

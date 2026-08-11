@@ -16,6 +16,7 @@ export type MarketplaceNFT = {
   tokenId: string;
   owner: `0x${string}`;
   metadataUri: string;
+  metadataAvailable: boolean;
   name: string;
   description: string;
   imageUri: string;

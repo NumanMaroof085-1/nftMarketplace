@@ -807,6 +807,18 @@ a:focus-visible {
   top: 14px;
 }
 
+.nft-card-image .metadata-status {
+  background: #fff0d8;
+  border-radius: 999px;
+  color: #7a490d;
+  font-size: 9px;
+  font-weight: 800;
+  padding: 7px 9px;
+  position: absolute;
+  right: 14px;
+  top: 14px;
+}
+
 .status-pill.listed {
   background: #dff0e4;
   color: var(--accent-dark);
@@ -997,6 +1009,26 @@ a:focus-visible {
   font-size: 16px;
   line-height: 1.7;
   margin-top: 27px;
+}
+
+.metadata-warning {
+  background: #fff7e9;
+  border: 1px solid #e7c88f;
+  border-radius: 12px;
+  margin-top: 18px;
+  padding: 14px 16px;
+}
+
+.metadata-warning strong {
+  color: #70430e;
+  font-size: 12px;
+}
+
+.metadata-warning p {
+  color: #795b35;
+  font-size: 11px;
+  line-height: 1.55;
+  margin-top: 4px;
 }
 
 .attribute-grid {
@@ -1269,6 +1301,246 @@ a:focus-visible {
   margin-top: 14px;
 }
 
+.account-page-heading {
+  margin: 80px auto 0;
+  max-width: 1124px;
+  padding: 0 28px;
+}
+
+.account-page-heading h1 {
+  font-family: Georgia, serif;
+  font-size: clamp(48px, 7vw, 82px);
+  font-weight: 500;
+  letter-spacing: -0.055em;
+  line-height: 0.98;
+  margin-top: 14px;
+  max-width: 760px;
+}
+
+.account-page-heading > p:last-child {
+  color: var(--muted);
+  font-size: 15px;
+  line-height: 1.7;
+  margin-top: 22px;
+  max-width: 630px;
+}
+
+.account-dashboard-grid {
+  display: grid;
+  gap: 24px;
+  grid-template-columns: minmax(0, 1.15fr) minmax(320px, 0.85fr);
+  margin: 48px auto 100px;
+  max-width: 1124px;
+  padding: 0 28px;
+}
+
+.account-connect-card {
+  align-items: flex-start;
+  background: var(--surface);
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  display: flex;
+  gap: 22px;
+  margin: 48px auto 100px;
+  max-width: 1068px;
+  padding: 30px;
+}
+
+.account-connect-card > span {
+  align-items: center;
+  background: #e0eee4;
+  border-radius: 50%;
+  color: var(--accent-dark);
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 11px;
+  height: 38px;
+  justify-content: center;
+  width: 38px;
+}
+
+.account-connect-card h2 {
+  font-family: Georgia, serif;
+  font-size: 28px;
+  font-weight: 500;
+}
+
+.account-connect-card p {
+  color: var(--muted);
+  font-size: 13px;
+  line-height: 1.7;
+  margin-top: 7px;
+  max-width: 620px;
+}
+
+.proceeds-card,
+.proceeds-explainer {
+  border: 1px solid var(--line);
+  border-radius: 18px;
+  padding: 28px;
+}
+
+.proceeds-card {
+  background: var(--foreground);
+  color: white;
+}
+
+.proceeds-card-topline {
+  align-items: center;
+  border-bottom: 1px solid rgba(255, 255, 255, 0.15);
+  display: flex;
+  justify-content: space-between;
+  padding-bottom: 18px;
+}
+
+.proceeds-card-topline span,
+.proceeds-card-topline strong {
+  font-size: 11px;
+}
+
+.proceeds-card-topline span {
+  color: #aebcaf;
+  text-transform: uppercase;
+}
+
+.proceeds-card-topline strong {
+  font-family: "Cascadia Code", Consolas, monospace;
+}
+
+.proceeds-balance {
+  padding: 50px 0 42px;
+}
+
+.proceeds-balance > p {
+  color: #aebcaf;
+  font-size: 12px;
+}
+
+.proceeds-balance > strong {
+  display: block;
+  font-family: Georgia, serif;
+  font-size: clamp(42px, 6vw, 68px);
+  font-weight: 500;
+  letter-spacing: -0.04em;
+  margin-top: 7px;
+  overflow-wrap: anywhere;
+}
+
+.proceeds-balance > strong span {
+  color: #aebcaf;
+  font-family: Arial, Helvetica, sans-serif;
+  font-size: 15px;
+  letter-spacing: 0;
+}
+
+.proceeds-balance small {
+  color: #aebcaf;
+  display: block;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-top: 10px;
+}
+
+.proceeds-card > button {
+  background: #e7f3ea;
+  border: 0;
+  border-radius: 10px;
+  color: var(--accent-dark);
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  min-height: 50px;
+  width: 100%;
+}
+
+.proceeds-card > button:hover:not(:disabled) {
+  background: white;
+}
+
+.proceeds-card > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.5;
+}
+
+.proceeds-card .form-alert {
+  margin-bottom: 16px;
+}
+
+.withdrawal-success {
+  background: rgba(122, 206, 151, 0.14);
+  border: 1px solid rgba(156, 225, 179, 0.28);
+  border-radius: 9px;
+  color: #c4e8d0;
+  font-size: 11px;
+  line-height: 1.5;
+  margin-bottom: 16px;
+  padding: 11px 12px;
+}
+
+.withdrawal-success a {
+  color: white;
+  font-weight: 700;
+  text-underline-offset: 3px;
+}
+
+.proceeds-explainer {
+  background: var(--surface);
+}
+
+.proceeds-explainer h2 {
+  font-family: Georgia, serif;
+  font-size: 31px;
+  font-weight: 500;
+  margin-top: 10px;
+}
+
+.proceeds-explainer ol {
+  display: grid;
+  gap: 20px;
+  list-style: none;
+  margin-top: 26px;
+}
+
+.proceeds-explainer li {
+  align-items: flex-start;
+  display: flex;
+  gap: 12px;
+}
+
+.proceeds-explainer li > span {
+  align-items: center;
+  border: 1px solid var(--line);
+  border-radius: 50%;
+  display: inline-flex;
+  flex: 0 0 auto;
+  font-family: "Cascadia Code", Consolas, monospace;
+  font-size: 9px;
+  height: 27px;
+  justify-content: center;
+  width: 27px;
+}
+
+.proceeds-explainer li strong {
+  font-size: 12px;
+}
+
+.proceeds-explainer li p {
+  color: var(--muted);
+  font-size: 11px;
+  line-height: 1.55;
+  margin-top: 4px;
+}
+
+.proceeds-explainer > a {
+  color: var(--foreground);
+  display: inline-block;
+  font-size: 11px;
+  font-weight: 700;
+  margin-top: 28px;
+  text-underline-offset: 4px;
+}
+
 .back-link {
   color: var(--foreground);
   display: inline-block;
@@ -1307,6 +1579,10 @@ a:focus-visible {
   }
 
   .nft-details-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .account-dashboard-grid {
     grid-template-columns: 1fr;
   }
 
@@ -1363,9 +1639,20 @@ a:focus-visible {
   }
 
   .discovery-section,
-  .nft-details-grid {
+  .nft-details-grid,
+  .account-page-heading,
+  .account-dashboard-grid {
     padding-left: 18px;
     padding-right: 18px;
+  }
+
+  .account-page-heading {
+    margin-top: 55px;
+  }
+
+  .account-connect-card {
+    margin-left: 18px;
+    margin-right: 18px;
   }
 
   .discovery-heading {

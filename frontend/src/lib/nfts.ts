@@ -83,6 +83,7 @@ async function loadMetadata(metadataUri: string) {
   const imageUri = typeof record.image === "string" ? record.image : "";
 
   return {
+    metadataAvailable: true,
     name: typeof record.name === "string" ? record.name : "Untitled NFT",
     description:
       typeof record.description === "string" ? record.description : "",
@@ -116,7 +117,16 @@ export async function getMarketplaceNFT(tokenId: bigint): Promise<MarketplaceNFT
   ]);
 
   const [metadata, listing] = await Promise.all([
-    loadMetadata(metadataUri),
+    loadMetadata(metadataUri).catch(() => ({
+      metadataAvailable: false,
+      name: `NFT #${tokenId.toString()}`,
+      description:
+        "This token still exists on Sepolia, but its IPFS metadata is unavailable.",
+      imageUri: "",
+      imageUrl: "",
+      creator: "Unavailable",
+      attributes: [] as NFTAttribute[],
+    })),
     activeListingId > BigInt(0)
       ? publicClient.readContract({
           abi: marketplaceAbi,

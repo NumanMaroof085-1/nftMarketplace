@@ -3,7 +3,7 @@ import Link from "next/link";
 import { WalletButton } from "./wallet-button";
 
 type SiteHeaderProps = {
-  active?: "discover" | "create";
+  active?: "discover" | "create" | "account";
 };
 
 export function SiteHeader({ active }: SiteHeaderProps) {
@@ -22,6 +22,12 @@ export function SiteHeader({ active }: SiteHeaderProps) {
         </Link>
         <Link className={active === "create" ? "active" : ""} href="/create">
           Create
+        </Link>
+        <Link
+          className={active === "account" ? "active" : ""}
+          href="/account"
+        >
+          Account
         </Link>
       </nav>
       <div className="header-actions">
