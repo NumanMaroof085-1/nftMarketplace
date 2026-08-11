@@ -6,6 +6,7 @@ import Link from "next/link";
 import { useQuery } from "@tanstack/react-query";
 
 import { ListingForm } from "@/components/listing-form";
+import { ListingActions } from "@/components/listing-actions";
 import {
   NFT_ADDRESS,
   SEPOLIA_EXPLORER_URL,
@@ -114,6 +115,7 @@ export function NFTDetails({ tokenId }: { tokenId: string }) {
               <span>Current price</span>
               <strong>{nft.listing.priceEth} ETH</strong>
               <p>Seller {shortenAddress(nft.listing.seller)}</p>
+              <ListingActions listing={nft.listing} onUpdated={refetch} />
             </div>
           ) : (
             <>

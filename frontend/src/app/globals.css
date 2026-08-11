@@ -1209,6 +1209,66 @@ a:focus-visible {
   margin-top: 5px;
 }
 
+.listing-actions,
+.listing-actions-message {
+  border-top: 1px solid var(--line);
+  margin-top: 20px;
+  padding-top: 18px;
+}
+
+.listing-actions > p,
+.listing-actions-message {
+  color: var(--muted);
+  font-size: 12px;
+  line-height: 1.6;
+}
+
+.listing-actions > button {
+  border-radius: 10px;
+  cursor: pointer;
+  font-size: 13px;
+  font-weight: 800;
+  margin-top: 14px;
+  min-height: 48px;
+  padding: 0 20px;
+  transition:
+    background 160ms ease,
+    border-color 160ms ease,
+    color 160ms ease;
+  width: 100%;
+}
+
+.listing-actions > button:disabled {
+  cursor: not-allowed;
+  opacity: 0.55;
+}
+
+.buy-listing-button {
+  background: var(--foreground);
+  border: 1px solid var(--foreground);
+  color: white;
+}
+
+.buy-listing-button:hover:not(:disabled) {
+  background: var(--accent-dark);
+  border-color: var(--accent-dark);
+}
+
+.cancel-listing-button {
+  background: transparent;
+  border: 1px solid #c4bdb0;
+  color: var(--foreground);
+}
+
+.cancel-listing-button:hover:not(:disabled) {
+  background: #f1eee7;
+  border-color: var(--foreground);
+}
+
+.listing-actions .form-alert {
+  margin-top: 14px;
+}
+
 .back-link {
   color: var(--foreground);
   display: inline-block;
