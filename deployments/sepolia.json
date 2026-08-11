@@ -1,0 +1,14 @@
+{
+  "network": "sepolia",
+  "chainId": 11155111,
+  "contracts": {
+    "NFT": {
+      "address": "0xeF6921a2743Be0953E1855B1F81D330cE97E1Db5",
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0xeF6921a2743Be0953E1855B1F81D330cE97E1Db5#code"
+    },
+    "NFTMarketplace": {
+      "address": "0x27b33F1A4f79346305Fe20779F339D79996569ec",
+      "etherscanUrl": "https://sepolia.etherscan.io/address/0x27b33F1A4f79346305Fe20779F339D79996569ec#code"
+    }
+  }
+}
