@@ -5,7 +5,7 @@ import { getPinata } from "@/lib/pinata";
 
 export const runtime = "nodejs";
 
-const MAX_FILE_SIZE = 10 * 1024 * 1024;
+const MAX_FILE_SIZE = 4 * 1024 * 1024;
 const ALLOWED_IMAGE_TYPES = new Set([
   "image/gif",
   "image/jpeg",
@@ -74,7 +74,7 @@ export async function POST(request: NextRequest) {
 
     if (!ALLOWED_IMAGE_TYPES.has(file.type) || file.size > MAX_FILE_SIZE) {
       return NextResponse.json(
-        { error: "Use a JPG, PNG, GIF, or WebP image no larger than 10 MB" },
+        { error: "Use a JPG, PNG, GIF, or WebP image no larger than 4 MB" },
         { status: 400 },
       );
     }

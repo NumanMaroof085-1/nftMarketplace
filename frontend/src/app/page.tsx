@@ -1,4 +1,4 @@
-import { WalletButton } from "@/components/wallet-button";
+import { SiteHeader } from "@/components/site-header";
 import {
   MARKETPLACE_ADDRESS,
   NFT_ADDRESS,
@@ -26,18 +26,7 @@ const marketplaceSteps = [
 export default function Home() {
   return (
     <main className="site-shell">
-      <header className="site-header">
-        <a className="brand" href="#top" aria-label="NFT Marketplace home">
-          <span className="brand-mark">N</span>
-          <span>NFT Marketplace</span>
-        </a>
-        <div className="header-actions">
-          <span className="network-badge">
-            <span aria-hidden="true" /> Sepolia
-          </span>
-          <WalletButton />
-        </div>
-      </header>
+      <SiteHeader active="discover" />
 
       <section className="hero" id="top">
         <div className="hero-copy">
@@ -48,8 +37,8 @@ export default function Home() {
             and verified on Ethereum Sepolia.
           </p>
           <div className="hero-actions">
-            <a className="primary-link" href="#how-it-works">
-              Explore the flow
+            <a className="primary-link" href="/create">
+              Create an NFT
             </a>
             <a
               className="secondary-link"
