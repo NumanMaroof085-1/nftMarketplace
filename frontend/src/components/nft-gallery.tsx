@@ -9,8 +9,23 @@ import { useQuery } from "@tanstack/react-query";
 import type { MarketplaceNFT } from "@/types/nft";
 
 async function fetchNFTs() {
-  const response = await fetch("/api/nfts", { cache: "no-store" });
-  const result = (await response.json()) as MarketplaceNFT[] | { error: string };
+  let response: Response;
+
+  try {
+    response = await fetch("/api/nfts", {
+      signal: AbortSignal.timeout(22_000),
+    });
+  } catch (error) {
+    if (error instanceof DOMException && error.name === "TimeoutError") {
+      throw new Error("Sepolia data took too long to respond. Please try again.");
+    }
+
+    throw error;
+  }
+
+  const result = (await response.json().catch(() => ({
+    error: `The marketplace data service returned status ${response.status}`,
+  }))) as MarketplaceNFT[] | { error: string };
 
   if (!response.ok || "error" in result) {
     throw new Error("error" in result ? result.error : "Unable to load NFTs");
@@ -55,6 +70,8 @@ export function NFTGallery() {
   const { data, error, isPending, refetch } = useQuery({
     queryKey: ["marketplace-nfts"],
     queryFn: fetchNFTs,
+    retry: false,
+    staleTime: 15_000,
   });
 
   if (isPending) {

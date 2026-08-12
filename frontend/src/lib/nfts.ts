@@ -29,10 +29,10 @@ const publicClient = createPublicClient({
   chain: sepolia,
   transport: configuredSepoliaRpcUrl
     ? fallback([
-        http(configuredSepoliaRpcUrl, { retryCount: 2, timeout: 15_000 }),
-        http(undefined, { retryCount: 2, timeout: 15_000 }),
+        http(configuredSepoliaRpcUrl, { retryCount: 0, timeout: 6_000 }),
+        http(undefined, { retryCount: 0, timeout: 6_000 }),
       ])
-    : http(undefined, { retryCount: 2, timeout: 15_000 }),
+    : http(undefined, { retryCount: 1, timeout: 8_000 }),
 });
 
 function ipfsToHttp(uri: string) {
@@ -85,8 +85,8 @@ function parseAttributes(value: unknown): NFTAttribute[] {
 
 async function loadMetadata(metadataUri: string) {
   const response = await fetch(ipfsToHttp(metadataUri), {
-    cache: "no-store",
-    signal: AbortSignal.timeout(12_000),
+    cache: "force-cache",
+    signal: AbortSignal.timeout(4_000),
   });
 
   if (!response.ok) {
