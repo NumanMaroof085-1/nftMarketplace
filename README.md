@@ -11,7 +11,7 @@ hardcoded records.
 
 ## Live project
 
-- Live application: Add the Vercel URL after deployment.
+- Live application: <https://nft-marketplace-eight-mauve.vercel.app>
 - GitHub repository: <https://github.com/NumanMaroof085-1/nftMarketplace>
 - Network: Ethereum Sepolia (`chainId: 11155111`)
 
@@ -168,10 +168,12 @@ placeholders:
 ```env
 PINATA_JWT=your_pinata_jwt
 PINATA_GATEWAY=your-gateway.mypinata.cloud
+SEPOLIA_RPC_URL=https://your-sepolia-rpc-url
 ```
 
-`PINATA_JWT` is server-only. Do not prefix it with `NEXT_PUBLIC_` or commit the
-`.env.local` file.
+`PINATA_JWT` and `SEPOLIA_RPC_URL` are server-only. Do not prefix them with
+`NEXT_PUBLIC_` or commit the `.env.local` file. The RPC URL only permits the
+frontend server to read Sepolia; it does not sign transactions.
 
 Start the application:
 
@@ -204,13 +206,14 @@ npm run build
 1. Import this GitHub repository into Vercel.
 2. Set the Vercel project **Root Directory** to `frontend`.
 3. Keep the detected Next.js build settings.
-4. Add `PINATA_JWT` and `PINATA_GATEWAY` as production environment variables.
+4. Add `PINATA_JWT`, `PINATA_GATEWAY`, and `SEPOLIA_RPC_URL` as Production and
+   Preview environment variables.
 5. Deploy and run the complete two-wallet marketplace flow on the public URL.
-6. Replace the live-application placeholder near the top of this README.
-7. Add the final screenshots described in `docs/screenshots/README.md`.
+6. Add the final screenshots described in `docs/screenshots/README.md`.
 
-Do not place private keys, RPC secrets, or deployment-wallet credentials in
-Vercel. The frontend only needs the two Pinata values.
+Never place a wallet private key or deployment-wallet credentials in Vercel.
+The frontend uses the Sepolia RPC URL only for read-only blockchain requests;
+MetaMask still signs every user transaction.
 
 ## Known limitations
 

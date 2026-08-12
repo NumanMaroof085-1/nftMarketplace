@@ -1,6 +1,12 @@
 import "server-only";
 
-import { createPublicClient, formatEther, http, type Address } from "viem";
+import {
+  createPublicClient,
+  fallback,
+  formatEther,
+  http,
+  type Address,
+} from "viem";
 import { sepolia } from "viem/chains";
 
 import {
@@ -17,9 +23,16 @@ import type {
   NFTAttribute,
 } from "@/types/nft";
 
+const configuredSepoliaRpcUrl = process.env.SEPOLIA_RPC_URL?.trim();
+
 const publicClient = createPublicClient({
   chain: sepolia,
-  transport: http(),
+  transport: configuredSepoliaRpcUrl
+    ? fallback([
+        http(configuredSepoliaRpcUrl, { retryCount: 2, timeout: 15_000 }),
+        http(undefined, { retryCount: 2, timeout: 15_000 }),
+      ])
+    : http(undefined, { retryCount: 2, timeout: 15_000 }),
 });
 
 function ipfsToHttp(uri: string) {
