@@ -9,11 +9,7 @@ import {
 } from "viem";
 import { sepolia } from "viem/chains";
 
-import {
-  MARKETPLACE_ADDRESS,
-  NFT_ADDRESS,
-  NFT_DEPLOYMENT_BLOCK,
-} from "@/config/contracts";
+import { MARKETPLACE_ADDRESS, NFT_ADDRESS } from "@/config/contracts";
 import { marketplaceAbi } from "@/contracts/marketplace-abi";
 import { nftAbi } from "@/contracts/nft-abi";
 import type {
@@ -24,6 +20,7 @@ import type {
 } from "@/types/nft";
 
 const configuredSepoliaRpcUrl = process.env.SEPOLIA_RPC_URL?.trim();
+const TOKEN_DISCOVERY_BATCH_SIZE = 50;
 
 const publicClient = createPublicClient({
   chain: sepolia,
@@ -34,6 +31,72 @@ const publicClient = createPublicClient({
       ])
     : http(undefined, { retryCount: 1, timeout: 8_000 }),
 });
+
+async function getMintedTokens() {
+  // NFT.sol starts at token 1, increments by one, and exposes no burn function.
+  // That makes the first nonexistent ownerOf result a reliable end marker.
+  const tokenIds: bigint[] = [];
+  let batchStart = BigInt(1);
+
+  while (true) {
+    const contracts: Array<{
+      abi: typeof nftAbi;
+      address: Address;
+      functionName: "ownerOf";
+      args: readonly [bigint];
+    }> = Array.from(
+      { length: TOKEN_DISCOVERY_BATCH_SIZE },
+      (_, index) => ({
+        abi: nftAbi,
+        address: NFT_ADDRESS,
+        functionName: "ownerOf",
+        args: [batchStart + BigInt(index)] as const,
+      }),
+    );
+    const results = await publicClient.multicall({
+      allowFailure: true,
+      contracts,
+    });
+
+    for (const [index, result] of results.entries()) {
+      if (result.status === "failure") {
+        return tokenIds;
+      }
+
+      tokenIds.push(batchStart + BigInt(index));
+    }
+
+    batchStart += BigInt(TOKEN_DISCOVERY_BATCH_SIZE);
+  }
+}
+
+async function getMarketplaceListings() {
+  const totalListings = await publicClient.readContract({
+    abi: marketplaceAbi,
+    address: MARKETPLACE_ADDRESS,
+    functionName: "totalListings",
+  });
+  const listingIds: bigint[] = [];
+
+  for (
+    let listingId = BigInt(1);
+    listingId <= totalListings;
+    listingId += BigInt(1)
+  ) {
+    listingIds.push(listingId);
+  }
+
+  return Promise.all(
+    listingIds.map((listingId) =>
+      publicClient.readContract({
+        abi: marketplaceAbi,
+        address: MARKETPLACE_ADDRESS,
+        functionName: "getListing",
+        args: [listingId],
+      }),
+    ),
+  );
+}
 
 function ipfsToHttp(uri: string) {
   if (!uri.startsWith("ipfs://")) {
@@ -114,27 +177,32 @@ async function loadMetadata(metadataUri: string) {
   };
 }
 
-export async function getMarketplaceNFT(tokenId: bigint): Promise<MarketplaceNFT> {
-  const [owner, metadataUri, activeListingId] = await Promise.all([
-    publicClient.readContract({
-      abi: nftAbi,
-      address: NFT_ADDRESS,
-      functionName: "ownerOf",
-      args: [tokenId],
-    }),
-    publicClient.readContract({
-      abi: nftAbi,
-      address: NFT_ADDRESS,
-      functionName: "tokenURI",
-      args: [tokenId],
-    }),
-    publicClient.readContract({
-      abi: marketplaceAbi,
-      address: MARKETPLACE_ADDRESS,
-      functionName: "activeListingIdForToken",
-      args: [NFT_ADDRESS, tokenId],
-    }),
-  ]);
+export async function getMarketplaceNFT(
+  tokenId: bigint,
+): Promise<MarketplaceNFT> {
+  const [owner, metadataUri, activeListingId] = await publicClient.multicall({
+    allowFailure: false,
+    contracts: [
+      {
+        abi: nftAbi,
+        address: NFT_ADDRESS,
+        functionName: "ownerOf",
+        args: [tokenId],
+      },
+      {
+        abi: nftAbi,
+        address: NFT_ADDRESS,
+        functionName: "tokenURI",
+        args: [tokenId],
+      },
+      {
+        abi: marketplaceAbi,
+        address: MARKETPLACE_ADDRESS,
+        functionName: "activeListingIdForToken",
+        args: [NFT_ADDRESS, tokenId],
+      },
+    ],
+  });
 
   const [metadata, listing] = await Promise.all([
     loadMetadata(metadataUri).catch(() => ({
@@ -176,95 +244,46 @@ export async function getMarketplaceNFT(tokenId: bigint): Promise<MarketplaceNFT
 }
 
 export async function getMarketplaceNFTs() {
-  const mintLogs = await publicClient.getContractEvents({
-    abi: nftAbi,
-    address: NFT_ADDRESS,
-    eventName: "NFTMinted",
-    fromBlock: NFT_DEPLOYMENT_BLOCK,
-    toBlock: "latest",
-  });
+  const tokenIds = await getMintedTokens();
 
-  const tokenIds = [
-    ...new Set(
-      mintLogs.flatMap((log) =>
-        log.args.tokenId === undefined ? [] : [log.args.tokenId.toString()],
-      ),
-    ),
-  ]
-    .map(BigInt)
-    .sort((left, right) => (left > right ? -1 : left < right ? 1 : 0));
-
-  return Promise.all(tokenIds.map(getMarketplaceNFT));
+  return Promise.all(tokenIds.reverse().map(getMarketplaceNFT));
 }
 
 export async function getMarketplaceAccountData(
   account: Address,
 ): Promise<MarketplaceAccountData> {
-  const [nfts, marketplaceLogs] = await Promise.all([
+  const [nfts, marketplaceListings] = await Promise.all([
     getMarketplaceNFTs(),
-    publicClient.getContractEvents({
-      abi: marketplaceAbi,
-      address: MARKETPLACE_ADDRESS,
-      fromBlock: NFT_DEPLOYMENT_BLOCK,
-      toBlock: "latest",
-    }),
+    getMarketplaceListings(),
   ]);
 
   const accountKey = account.toLowerCase();
   const nftByTokenId = new Map(nfts.map((nft) => [nft.tokenId, nft]));
-  const listingLogs = marketplaceLogs.filter(
-    (log) => log.eventName === "NFTListed",
-  );
-  const soldLogs = marketplaceLogs.filter(
-    (log) => log.eventName === "NFTSold",
-  );
-  const cancelledLogs = marketplaceLogs.filter(
-    (log) => log.eventName === "ListingCancelled",
-  );
-
-  const listingRecords = listingLogs.flatMap((listingLog) => {
-    const { listingId, nftContract, price, seller, tokenId } = listingLog.args;
-
-    if (
-      listingId === undefined ||
-      nftContract?.toLowerCase() !== NFT_ADDRESS.toLowerCase() ||
-      price === undefined ||
-      seller === undefined ||
-      tokenId === undefined
-    ) {
+  const listingRecords = marketplaceListings.flatMap((listing) => {
+    if (listing.nftContract.toLowerCase() !== NFT_ADDRESS.toLowerCase()) {
       return [];
     }
 
-    const listingKey = listingId.toString();
-    const nft = nftByTokenId.get(tokenId.toString());
+    const nft = nftByTokenId.get(listing.tokenId.toString());
 
     if (!nft) return [];
 
-    const soldLog = soldLogs.find(
-      (log) => log.args.listingId?.toString() === listingKey,
-    );
-    const cancelledLog = cancelledLogs.find(
-      (log) => log.args.listingId?.toString() === listingKey,
-    );
-    const status: AccountListingRecord["status"] = soldLog
-      ? "sold"
-      : cancelledLog
-        ? "cancelled"
-        : "active";
+    const status: AccountListingRecord["status"] =
+      listing.status === 2
+        ? "sold"
+        : listing.status === 3
+          ? "cancelled"
+          : "active";
 
     return [
       {
-        listingId: listingKey,
-        tokenId: tokenId.toString(),
-        priceEth: formatEther(price),
+        listingId: listing.listingId.toString(),
+        tokenId: listing.tokenId.toString(),
+        priceEth: formatEther(listing.price),
         status,
-        seller,
-        buyer: soldLog?.args.buyer ?? null,
-        transactionHash:
-          soldLog?.transactionHash ??
-          cancelledLog?.transactionHash ??
-          listingLog.transactionHash ??
-          null,
+        seller: listing.seller,
+        buyer: status === "sold" ? listing.buyer : null,
+        transactionHash: null,
         nft,
       } satisfies AccountListingRecord,
     ];
